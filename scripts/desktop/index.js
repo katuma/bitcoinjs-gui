@@ -43,26 +43,34 @@ $(function () {
 		e.preventDefault();
 	});
 
-	// Address copy-to-clipboard
-	ZeroClipboard.setMoviePath('scripts/vendor/zeroclipboard/ZeroClipboard.swf');
-	var addrClip = new ZeroClipboard.Client();
-	//addrClip.glue('addr_clip', 'wallet_active');
-	var addrClipButton = $('#addr_clip');
-	addrClip.addEventListener( 'mouseOver', function(client) {
-		addrClipButton.addClass('ui-state-hover');
-	});
 
-	addrClip.addEventListener( 'mouseOut', function(client) {
-		addrClipButton.removeClass('ui-state-hover');
-	});
+	 // Address copy-to-clipboard
+	 ZeroClipboard.setMoviePath('scripts/vendor/zeroclipboard/ZeroClipboard.swf');
+	 var addrClip = new ZeroClipboard.Client();
+	 //addrClip.glue('addr_clip', 'wallet_active');
+    
+	 // Disabling below, breaks Internet Explorer (addEventListener)
+         // Probably easy to fix with jquery.bind
+         // But: there is no #addr_clip button, so is this bitrot?
+         // However, the code still sometimes requires the addrClip object.
 
-	addrClip.addEventListener( 'mouseDown', function(client) {
-		addrClipButton.addClass('ui-state-focus');
-	});
+	 // var addrClipButton = $('#addr_clip');
+	 //  addrClip.addEventListener( 'mouseOver', function(client) {
+	 //  	addrClipButton.addClass('ui-state-hover');
+	 //  });
 
-	addrClip.addEventListener( 'mouseUp', function(client) {
-		addrClipButton.removeClass('ui-state-focus');
-	});
+	 //  addrClip.addEventListener( 'mouseOut', function(client) {
+	 //  	addrClipButton.removeClass('ui-state-hover');
+	 //  });
+
+	 //  addrClip.addEventListener( 'mouseDown', function(client) {
+	 //  	addrClipButton.addClass('ui-state-focus');
+	 //  });
+
+	 //  addrClip.addEventListener( 'mouseUp', function(client) {
+	 //  	addrClipButton.removeClass('ui-state-focus');
+	 //  });
+
 
 	// Options for autoNumeric to render BTC amounts
 	var autoNumericBtc = {

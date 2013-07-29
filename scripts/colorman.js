@@ -254,6 +254,9 @@ define(["jquery"], function ($) {
         var url = urls.shift();
         if (status) {
                 if (status != "success") {
+			if (window.addEventListener && err === 'No Transport') {
+			    alert("Your browser provides no way to connect to the remote server, try a newer version or another brand.");
+			}
 			alert('Failed to load ' + fixurl(prev));
 		} else {
 			// XXX better check for duplicates, verify the color data is actually correct etc
