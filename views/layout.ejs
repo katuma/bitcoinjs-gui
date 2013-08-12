@@ -43,19 +43,19 @@
           <div id="wallet_active" style="display: none">
             <div id="testnet_wallet" style="display: none">
               <p><strong>Note:</strong> this wallet works <strong style='color:red'>in testnet mode. It is for testing only</strong>, coins are not permanent.<br />
-                    You can get testnet Bitcoins from faucet: <button id='faucet'>request coins</button>. If it doesn't work, try 
+                    You can get testnet Bitcoins from faucet: <button class="btn btn-primary" id='faucet'>request coins</button>. If it doesn't work, try 
                 <a href="http://tpfaucet.appspot.com/">this</a> or <a href="http://testnet.mojocoin.com">this</a>.</p>
             </div>
             <form>
               <p>
                 <label for="color-selector-overview">Color: </label>
                 <select id="color-selector-overview" class="color-selector"><option value="">BTC</option></select>
-                <button onclick="window.location.reload(true); return false;">Reload / sync</button>
+                <button class="btn btn-primary" onclick="window.location.reload(true); return false;">Reload / sync</button>
               </p>
               <p>
                 <label for="addr">Your <span class='colorind'>?</span> Address:</label>
                 <input id="addr" class="text medium" readonly="readonly"/>
-                <button class="new_addr">New&hellip;</button>
+                <button class="btn btn-primary new_addr">New&hellip;</button>
               </p>
               <p>
                 <label style="vertical-align: bottom">Your Balance:</label>
@@ -67,9 +67,9 @@
               </p>
               <!--
               <p>
-              <button id="nav_send_money">Send coins</button>
-              <button id="nav_issue_money">Issue coins</button>
-              <button id="nav_p2ptrade">p2ptrade</button>
+              <button class="btn btn-primary" id="nav_send_money">Send coins</button>
+              <button class="btn btn-primary" id="nav_issue_money">Issue coins</button>
+              <button class="btn btn-primary" id="nav_p2ptrade">p2ptrade</button>
               </p>
               -->
             </form>
@@ -106,15 +106,15 @@
 
             </p>
             <p>
-              <button class="send">Send</button>
-              <button class="cancel">Cancel</button>
+              <button class="btn btn-primary send">Send</button>
+              <button class="btn btn-danger cancel">Cancel</button>
             </p>
           </form>
           <div class="confirm">
             <p>You are about to send <span class="confirm_amount"></span> to the address <span class="confirm_address">1OIJIPSDJG0sdJG)SDJG0sadjgF</span>.</p>
 
             <p>Bitcoin transactions are irrevocable. Would you like to proceed?</p>
-            <p><button class="confirm_send">Confirm</button> or <a class="cancel_confirm" href="#">go back</a></p>
+            <p><button class="btn btn-primary confirm_send">Confirm</button> or <a class="cancel_confirm" href="#">go back</a></p>
           </div>
           <div class="loading">
             <img src="images/walletsend.gif" alt="Sending coins...">
@@ -150,15 +150,15 @@
             </p>
 
             <p>
-              <button class="issue">Issue</button>
-              <button class="cancel">Cancel</button>
+              <button class="btn btn-primary issue">Issue</button>
+              <button class="btn btn-danger cancel">Cancel</button>
             </p>
           </form>
 
           <div class="confirm">
             <p>You are about to issue <span class="confirm_issue_amount"></span> of <b><span class="confirm_issue_name"></span></b> which will cost <span class="confirm_issue_cost">-1)SDJG0sadjgF</span> BTC.</p>
 
-            <p><button class="confirm_issue">Confirm</button> or <a class="cancel_confirm" href="#">go back</a></p>
+            <p><button class="btn confirm_issue">Confirm</button> or <a class="cancel_confirm" href="#">go back</a></p>
           </div>
           <div class="loading">
             <img src="images/walletsend.gif" alt="Sending coins...">
@@ -169,7 +169,7 @@
       </div>
 
       <div id="panel-p2ptrade">
-        <div id="p2ptrade" class="" role="dialog">
+        <div id="p2ptrade" title="P2P Trade" class="block">
           <p>
             <label for="color-selector-p2ptrade">Color: </label>
             <select id="color-selector-p2ptrade" class="color-selector"><option value="">BTC</option></select>
@@ -285,13 +285,13 @@
   <div class="query">
     <p>Load the transaction list for any set of Bitcoin addresses, enter them here (one address per line):</p>
     <textarea id="addresses" rows="10" style="width: 90%"></textarea>
-    <div><button id="address_load_start">Fetch transactions</button></div>
+    <div><button class="btn btn-primary" id="address_load_start">Fetch transactions</button></div>
   </div>
   <div class="progress"></div>
 
   <div class="result">
     <div class="txs"></div>
-    <button id="address_load_reset">&laquo; Back</button>
+    <button class="btn btn-primary" id="address_load_reset">&laquo; Back</button>
   </div>
 </div>
   
@@ -337,8 +337,8 @@
         <div>
     Add/remove server:<br/>
           <input id="colorUrl" type="text" class="text tiny exitnode" />
-          <button id="addColorUrl">Add</button> 
-          <button id="delColorUrl">Remove</button>
+          <button class="btn btn-primary" id="addColorUrl">Add</button> 
+          <button class="btn btn-danger" id="delColorUrl">Remove</button>
         </div>
       </p>
     </div>
@@ -347,8 +347,8 @@
     </div>
 
     <div class="controls">
-      <button class="save">Save Changes</button> 
-      <button class="cancel">Cancel</button> 
+      <button class="btn btn-primary save">Save Changes</button> 
+      <button class="btn btn-danger cancel">Cancel</button> 
     </div>
   </form>
 </div>
