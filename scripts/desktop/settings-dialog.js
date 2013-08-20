@@ -71,6 +71,18 @@ define(["jquery"],
                 resizable: false
             });
 
+			$(".sidebar_content").hide();
+			$("ul.sidemenu li:first-child").addClass("active").show();
+			$(".block .sidebar_content:first").show();
+			$("ul.sidemenu li").click(function () {
+				var activeTab = $(this).find("a").attr("href");
+				$(this).parent().find('li').removeClass("active");
+				$(this).addClass("active");
+				$(this).parents('.block').find(".sidebar_content").hide();
+				$(activeTab).show();
+				return false;
+			});
+
             return {
                 openDialog: function () {
                     cfgd.dialog('open');

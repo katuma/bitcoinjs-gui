@@ -8,15 +8,18 @@ define([
     "jquery",
     "../walletmanager",
     "../exitnode",
-    "./txview",
+    "desktop/transaction-view",
     "../bindings",
     "../colorman",
     "../p2ptrade/gui",
     "desktop/color-selector",
     "desktop/issue-panel",
+    "desktop/overview-panel",
     "desktop/send-panel",
+	"desktop/testnet-handler",
     "desktop/transaction-panel",
     "desktop/settings-dialog",
+    "desktop/main-page",
     "../wallets/miniwallet"
 ], function ($,
              WalletManager,
@@ -27,106 +30,22 @@ define([
              P2pgui,
              ColorSelector,
              IssuePanel,
+			 OverviewPanel,
              SendPanel,
+			 TestnetHandler,
              TransactionPanel,
-	     SettingsDialog,
+			 SettingsDialog,
+			 MainPage,
              MiniWallet) {
     'use strict';
     var colorSelector,
         issuePanel,
         sendPanel,
         transactionPanel,
-        settingsDialog,
-        initHtmlPage = function () {
-            $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'stylesheets/desktop.css'));
-            var html = new EJS({url: 'views/layout.ejs'}).render();
-            $("body").html(html);
-
-            // CSS tweaks
-            $('#header #nav li:last').addClass('nobg');
-            $('.block_head ul').each(function () { $('li:first', this).addClass('nobg'); });
-
-            // // Button styling
-            $('button').button();
-
-            // $('button')
-            //     .button()
-            //     .filter('#nav_send_money')
-            //     .button('option', 'icons', {primary: "icon-bitcoin-send"})
-            //     .end();
-
-            $('#tabs').tabs({
-                activate: function (event, ui) {
-                    console.log("tab activate", ui);
-                    if ($(ui.newPanel).is('#panel-issue')) {
-                        issuePanel.activate();
-                        // var issueDialog = $('#dialog_issue_money');
-                        // issueDialog.find('.entry').show();
-                        // issueDialog.find('.confirm, .loading').hide();
-                        // issueDialog.find('.dialog_issue_name').focus();
-                        // issueDialog.find('#dialog_issue_unit').val('10000');
-                        // issueDialog.find('.messages').empty();
-                    }
-                }
-            });
-        },
-        initmessages = function () {
-            // Messages
-            $('.block .message').hide().append('<span class="close" title="Dismiss"></span>').fadeIn('slow');
-            $('.block .message .close').hover(
-                function () { $(this).addClass('hover'); },
-                function () { $(this).removeClass('hover'); }
-            );
-            $('.block .message .close').click(function (e) {
-                $(this).parent().fadeOut('slow', function () { $(this).remove(); });
-            });
-        },
-        initAddress = function () {
-            // Address copy-to-clipboard
-            ZeroClipboard.setMoviePath('scripts/vendor/zeroclipboard/ZeroClipboard.swf');
-            var addrClip = new ZeroClipboard.Client();
-
-            // Address auto-selection
-            $('#addr').focus(function (e) {
-                this.select();
-            }).mouseup(function (e) {
-                this.select();
-                e.preventDefault();
-            }).change(function () {
-                var addr = $(this).addr();
-                addrClip.setText(addr);
-                addrClip.reposition();
-            });
-
-            //addrClip.glue('addr_clip', 'wallet_active');
-
-            // Disabling below, breaks Internet Explorer (addEventListener)
-            // Probably easy to fix with jquery.bind
-            // But: there is no #addr_clip button, so is this bitrot?
-            // However, the code still sometimes requires the addrClip object.
-
-            // var addrClipButton = $('#addr_clip');
-            //  addrClip.addEventListener( 'mouseOver', function(client) {
-            //     addrClipButton.addClass('ui-state-hover');
-            //  });
-
-            //  addrClip.addEventListener( 'mouseOut', function(client) {
-            //     addrClipButton.removeClass('ui-state-hover');
-            //  });
-
-            //  addrClip.addEventListener( 'mouseDown', function(client) {
-            //     addrClipButton.addClass('ui-state-focus');
-            //  });
-
-            //  addrClip.addEventListener( 'mouseUp', function(client) {
-            //     addrClipButton.removeClass('ui-state-focus');
-            //  });
-        };
+        settingsDialog;
 
     $(function () {
-        initHtmlPage();
-
-        initAddress();
+        MainPage.render();
 
         // Options for autoNumeric to render BTC amounts
         var autoNumericBtc = {
@@ -155,12 +74,20 @@ define([
         var exitNode = new ExitNode(exitNodeHost, +exitNodePort, !!exitNodeSecure,
                                     txDb, txMem, txView);
         var colorMan = new ColorMan(exitNode);
-        txView = new TransactionView($('#main_tx_list'), colorMan);
         var colordefServers = cfg.get('colordefServers');
 
+        txView = new TransactionView($('#main_tx_list'), colorMan);
         var pgui = new P2pgui(wm, colorMan, exitNode, cfg);
+		
+		var app = {
+			getWallet : function () {
+				return wallet;
+			}
+		}
 
         colorSelector = ColorSelector.makeColorSelector(allowedColors);
+
+        var overviewPanel = OverviewPanel.makeOverviewPanel();
 
         if (!cfg.get('have_wallet')) {
             setTimeout(function () {
@@ -172,34 +99,9 @@ define([
             }, 300);
         }
 
-        if (cfg.get('addrType') === 0x6f) { // testnet
-            $('#faucet').click(
-                function (e) {
-                    e.preventDefault();
-                    if (!wallet) {
-                        return;
-                    }
-                    $.ajax(
-                        "http://devel.hz.udoidio.info/faucet",
-                        {
-                            type: 'POST',
-                            data: { address: wallet.getCurAddress().toString() }
-                        }
-                    )
-                        .done(function (data) {
-                            $('#testnet_wallet').hide();
-                            alert('You got 1 testnet Bitcoin, transaction id: ' + data);
-                        })
-                        .fail(function (e) {
-                            alert('Sorry, faucet failure:' + e.toString());
-                        });
-                }
-            );
-            $('#testnet_wallet').show();
-        }
+		TestnetHandler.initialize(cfg, app, overviewPanel);
 
-        $('#exitnode_status').text(exitNodeHost);
-
+		MainPage.setConnectionInfo(exitNodeHost);
 
         function mangle_addr(addr) {
             var color = colorSelector.getColor(); // '' = BTC
@@ -211,9 +113,9 @@ define([
             console.log('@@@@' + color);
             pgui.setCurrentColor(color !== '' ? color : false, (color !== '') ? colorMan.cmap(color).unit.toString() : "1");
             if (wallet.dirty > 0) {
-                $("#updating-balance").show();
+                overviewPanel.showUpdatingBalance();
             } else {
-                $("#updating-balance").hide();
+                overviewPanel.hideUpdatingBalance();
             }
             var v = Bitcoin.Util.formatValue(colorMan.s2c(color, wallet.getBalance(color)));
             if (color) {
@@ -223,12 +125,13 @@ define([
                 //                      autoNumericColor.vMax = ''+v;
                 console.log(autoNumericColor);
             }
-            $('#wallet_active .balance .value').text(v);
-            $('#wallet_active .balance .unit').text(colorSelector.getColorName());
+			overviewPanel.setBalance(v, colorSelector.getColorName());
 
             $('.colorind').text(colorSelector.getColorName());
+
             var addr = wallet.getCurAddress().toString();
-            $('#addr').val(mangle_addr(wallet.getCurAddress().toString()));
+			overviewPanel.setAddress(
+				mangle_addr(wallet.getCurAddress().toString()));
         }
 
         // UGLY UGLY UGLY UGLY
@@ -240,13 +143,11 @@ define([
             });
         }
 
-
         setCommonBindings(cfg, wm, txDb, txMem, txView, exitNode, colorMan);
 
         $(exitNode).bind('connectStatus', function (e) {
             console.log('connect', e);
-            $('#exitnode_status').removeClass('unknown error warning ok');
-            $('#exitnode_status').addClass(e.status);
+			MainPage.setConnectionStatus(e.status);
         });
 
         $(exitNode).bind('txData txAdd txNotify', function (e) {
@@ -254,37 +155,25 @@ define([
         });
 
         $(wm).bind('walletProgress', function (e) {
-            $("#wallet_init_status").text("Creating wallet " + e.n + "/" + e.total);
+            overviewPanel.setWalletInitInfo("Creating wallet " + e.n + "/" + e.total);
         });
 
         $(wm).bind('walletInit', function (e) {
-            $("#wallet_init_status").text("");
-            $('#wallet_active').show();
-            $('#wallet_init').hide();
+			overviewPanel.setWalletActiveState();
             wallet = e.newWallet.wallet;
             var addr = e.newWallet.wallet.getCurAddress().toString();
-            $('#addr').val(addr);
+			overviewPanel.setAddress(addr);
         });
 
         $(wm).bind('walletDeinit', function (e) {
-            $("#wallet_init_status").text("");
-            $('#wallet_active').hide();
-            $('#wallet_init').show();
+			overviewPanel.setWalletInitState();
         });
 
         // Load wallet if there is one
         wm.init();
 
         // Interface buttons
-        $('#wallet_init_create').click(function (e) {
-            e.preventDefault();
-            wm.createWallet({
-                'type': 'mini',
-                'name': 'testing'
-            });
-        });
-        $('#wallet_active_recreate').click(function (e) {
-            e.preventDefault();
+		$(overviewPanel).bind(overviewPanel.events.NEW_WALLET_CLICK, function (e) {
             if (prompt("WARNING: This action will make the application forget your current wallet. Unless you have the wallet backed up, this is final and means your balance will be lost forever!\n\nIF YOU ARE SURE, TYPE \"YES\".") === "YES") {
                 wm.createWallet({
                     'type': 'mini',
@@ -293,15 +182,11 @@ define([
             }
         });
 
-
-        $('#wallet_active .new_addr').click(function (e) {
-            e.preventDefault();
+		$(overviewPanel).bind(overviewPanel.events.NEW_ADDRESS_CLICK, function (e) {
             var addr = mangle_addr(wallet.getNextAddress().toString());
-            $('#addr').val(addr);
+            overviewPanel.setAddress(addr);
             wm.save();
         });
-
-
 
         $(colorSelector).change(function () {
             updateBalance();
@@ -311,24 +196,16 @@ define([
             updateBalance();
         });
 
-        $(colorMan).bind(
-            'colordefUpdate',
-            function (e, d) {
-                colorSelector.setColors(d);
-            }
-        );
+        $(colorMan).bind('colordefUpdate', function (e, d) {
+            colorSelector.setColors(d);
+        });
 
-        // $('#nav_p2ptrade').click(function (e) {
-        //     e.preventDefault();
-        //     $('#p2ptrade').modal();
-        // });
-
-        issuePanel = IssuePanel.makeIssuePanel(wallet, cfg, wm, colorMan,
+        issuePanel = IssuePanel.makeIssuePanel(app, cfg, wm, colorMan,
                                               colordefServers,
                                               allowedColors,
                                               exitNode, reload_colors);
 
-        sendPanel = SendPanel.makeSendPanel(wallet, cfg, wm, colorMan,
+        sendPanel = SendPanel.makeSendPanel(app, cfg, wm, colorMan,
                                             exitNode, colorSelector);
 
         transactionPanel = TransactionPanel.makeTransactionPanel();
@@ -339,31 +216,10 @@ define([
 							   autoNumericBtc,
 							   reload_colors);
 
-        $(".sidebar_content").hide();
-        $("ul.sidemenu li:first-child").addClass("active").show();
-        $(".block .sidebar_content:first").show();
-        $("ul.sidemenu li").click(function () {
-            var activeTab = $(this).find("a").attr("href");
-            $(this).parent().find('li').removeClass("active");
-            $(this).addClass("active");
-            $(this).parents('.block').find(".sidebar_content").hide();
-            $(activeTab).show();
-            return false;
-        });
-        $('#nav .settings').click(function () {
+		$(MainPage).bind(MainPage.events.SETTINGS_CLICK, function () {
             settingsDialog.openDialog();
-            return false;
+			return false;
         });
 
-        /*
-        // Some testing code:
-        //$('#addr').text(Bitcoin.Base58.encode(Crypto.util.hexToBytes("0090fd25b15e497f5d0986bda9f7f98c1f8c8a73f6")));
-        var key = new Bitcoin.ECKey();
-        key.pub = Crypto.util.hexToBytes("046a76e56adf269cb896a7af1cdb01aa4acce82881a2696bc33a04aed20c176a44ed7bfbb10b91186f1a6b680daf000f742213bb3033b56c73695f357afc768781");
-        console.log(key.getBitcoinAddress().toString());
-
-        var addr = new Bitcoin.Address('1EDdZbvAJcxoHxJq6UDQGDtEQqgoT3XK3f');
-        console.log(Crypto.util.bytesToHex(addr.hash));
-        console.log(addr.toString());*/
     });
 });

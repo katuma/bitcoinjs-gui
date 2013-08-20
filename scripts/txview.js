@@ -1,6 +1,5 @@
 define(function () {
-  var TransactionView = function (container, cm) {
-      this.cm = cm;
+  var TransactionView = function (container) {
 	  this.db = null;
 	  this.mem = null;
 	  this.wallet = null;

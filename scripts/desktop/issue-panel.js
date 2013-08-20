@@ -25,12 +25,8 @@ define([
                 issueDialog.find('#dialog_issue_unit').val('10000');
                 issueDialog.find('.messages').empty();
             },
-            activate = function () {
-                //var an = getColor()?autoNumericColor:autoNumericBtc;
-                //sendDialog.find('.amount').autoNumeric(an);
-                //issueDialog.dialog('open');
-            },
             update_issue_cost = function () {
+				var wallet = app.getWallet();
                 function set(s) {
                     if (!s) {
                         s = "amount X unit";
@@ -77,6 +73,7 @@ define([
                 issueDialog.find('#dialog_issue_unit').keyup(update_issue_cost);
             },
             doIssue = function () {
+				var wallet = app.getWallet();
 
                 var msgHub = issueDialog.find('.messages');
                 msgHub.empty();
@@ -195,9 +192,6 @@ define([
         });
         reset();
         initIssueEventHandlers();
-        return {
-            activate: activate
-        };
     };
     return {
         makeIssuePanel: makeIssuePanel

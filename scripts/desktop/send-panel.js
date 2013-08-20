@@ -6,7 +6,7 @@ define([
     "jquery"
 ], function ($) {
     "use strict";
-    var makeSendPanel = function (wallet, cfg, wm, colorMan, exitNode, colorSelector) {
+    var makeSendPanel = function (app, cfg, wm, colorMan, exitNode, colorSelector) {
         // Send Money Dialog
         //        var sendDialog = $('#dialog_send_money').dialog({
         //            autoOpen: false,
@@ -47,6 +47,7 @@ define([
             sendDialog.find('.confirm, .loading').hide();
         });
         sendDialog.find('.send').click(function (e) {
+			var wallet = app.getWallet();
             e.preventDefault();
             var msgHub = sendDialog.find('.messages');
             msgHub.empty();
@@ -118,6 +119,7 @@ define([
             var confirmButton = sendDialog.find('.confirm_send');
             confirmButton.unbind('click');
             confirmButton.click(function () {
+				var wallet = app.getWallet();
                 var tx;
                 try {
                     tx = wallet.createSend(new Bitcoin.Address(rcpt), value, Bitcoin.Util.parseValue(String(cfg.get('fee'))), colorSelector.getColor());
