@@ -60,7 +60,7 @@
               <p>
                 <label style="vertical-align: bottom">Your Balance:</label>
                 <span class="balance">
-                  <img src="images/ajax-loader.gif" id="updating-balance">
+                  <img src="images/ajax-loader.gif" class="updating-balance">
                   <span class="value">Connecting...</span>
                   <span class="unit"></span>
                 </span>
@@ -88,28 +88,31 @@
 
       <div id="panel-send">
         <div id="dialog_send_money" title="Send coins" class="block">
-          <form class="entry">
-            <p>
-                <label for="color-selector-send">Color: </label>
+          <form class="entry form-inline">
+            <p> 
+                <label>Amount:</label> 
+                <input id="dialog_send_money_amount" type="text" class="text tiny auto amount" />
                 <select id="color-selector-send" class="color-selector"><option value="">BTC</option></select>
             </p>
-
-            <div class="messages"></div>
-            <p> 
-              <label>Amount:</label><br /> 
-              <input id="dialog_send_money_amount" type="text" class="text tiny auto amount" />
-            </p>
             <p>
-              <label>Pay to:</label><br />
+              <label>Pay to:</label>
               <input type="text" class="text small address" /><br />
-              <span class="note" style="padding-left: 0">A Bitcoin Address, e.g. 1KPiGQYcMApEhJfcerftexfCDV7xKZt7fe</span>
-
+              <span class="note padding-left-0">A Bitcoin Address, e.g. 1KPiGQYcMApEhJfcerftexfCDV7xKZt7fe</span>
             </p>
             <p>
               <button class="send">Send</button>
               <button class="cancel">Cancel</button>
             </p>
+            <div class="messages"></div>
           </form>
+          <p>
+            <label style="vertical-align: bottom">Your Balance:</label>
+            <span class="balance">
+              <img src="images/ajax-loader.gif" class="updating-balance">
+              <span class="value">Connecting...</span>
+              <span class="unit"></span>
+            </span>
+          </p>
           <div class="confirm">
             <p>You are about to send <span class="confirm_amount"></span> to the address <span class="confirm_address">1OIJIPSDJG0sdJG)SDJG0sadjgF</span>.</p>
 
@@ -141,7 +144,7 @@
             <p> 
               <label>Unit:</label><br /> 
               <input id="dialog_issue_unit" type="text" class="text tiny auto amount" /> (satoshi per unit)<br/>
-              <span class="note" style="padding-left: 0">You will need <i id='issue_cost'>amount X unit</i> BTC to issue</span>
+              <span class="note padding-left-0">You will need <i id='issue_cost'>amount X unit</i> BTC to issue</span>
             </p>
 
             <p>
@@ -311,7 +314,7 @@
       <p>
         <label>Default Fee:</label><br> 
         <input id="dialog_settings_fee" type="text" class="text tiny auto amount" /><br>
-        <span class="note" style="padding-left: 0">You can change the fee per transaction in the Send Money dialog.</span>
+        <span class="note padding-left-0">You can change the fee per transaction in the Send Money dialog.</span>
       </p>
     </div>
 
@@ -319,8 +322,7 @@
       <p>
         <label>Exit Node</label><br />
         <input id="dialog_settings_exitNodeHost" type="text" class="text tiny exitnode" /><br />
-        <span class="note" style="padding-left: 0">The hostname for your Bitcoin exit node.</span>
-
+        <span class="note padding-left-0">The hostname for your Bitcoin exit node.</span>
       </p>
     </div>
 
