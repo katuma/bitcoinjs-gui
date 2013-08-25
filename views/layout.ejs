@@ -93,6 +93,14 @@
                 <label>Amount:</label> 
                 <input id="dialog_send_money_amount" type="text" class="text tiny auto amount" />
                 <select id="color-selector-send" class="color-selector"><option value="">BTC</option></select>
+                <br/>
+                <span class="balance font-small">
+                  (Available Balance:
+                  <img src="images/ajax-loader.gif" class="updating-balance">
+                  <span class="value">Connecting...</span>
+                  <span class="unit"></span>
+                  )
+                </span>
             </p>
             <p>
               <label>Pay to:</label>
@@ -105,14 +113,6 @@
             </p>
             <div class="messages"></div>
           </form>
-          <p>
-            <label style="vertical-align: bottom">Your Balance:</label>
-            <span class="balance">
-              <img src="images/ajax-loader.gif" class="updating-balance">
-              <span class="value">Connecting...</span>
-              <span class="unit"></span>
-            </span>
-          </p>
           <div class="confirm">
             <p>You are about to send <span class="confirm_amount"></span> to the address <span class="confirm_address">1OIJIPSDJG0sdJG)SDJG0sadjgF</span>.</p>
 
