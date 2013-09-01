@@ -89,7 +89,7 @@
       <div id="panel-send">
         <div id="dialog_send_money" title="Send coins" class="block">
           <form class="entry form-inline">
-            <p> 
+            <p>
                 <label>Amount:</label> 
                 <input id="dialog_send_money_amount" type="text" class="text tiny auto amount" />
                 <select id="color-selector-send" class="color-selector"><option value="">BTC</option></select>
@@ -161,16 +161,24 @@
           <div class="loading">
             <img src="images/walletsend.gif" alt="Sending coins...">
             <p>Issuing coins...</p>
-
           </div>
         </div>
       </div>
 
       <div id="panel-p2ptrade">
         <div id="p2ptrade" title="P2P Trade" class="block">
+          <div class="messages"></div>
           <p>
             <label for="color-selector-p2ptrade">Color: </label>
             <select id="color-selector-p2ptrade" class="color-selector"><option value="">BTC</option></select>
+            <br />
+            <span class="balance font-small">
+              (Available Balance:
+              <img src="images/ajax-loader.gif" class="updating-balance">
+              <span class="value">Connecting...</span>
+              <span class="unit"></span>
+              )
+            </span>
           </p>
           <div class="container">
             <div class="row">

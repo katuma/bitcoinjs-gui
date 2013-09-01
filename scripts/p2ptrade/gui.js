@@ -16,7 +16,7 @@ define(
 
             this.comm = new HTTPExchangeComm('http://p2ptrade.btx.udoidio.info/messages');
             this.epa = new ExchangePeerAgent(ewallet, this.comm);
-
+            
             function refresh() {
                 self.comm.update();
                 self.updateGUIstate();
@@ -75,6 +75,7 @@ define(
 
             $("#p2p_status").text(text);
 
+            self.checkBTCTrade();
 
             function display(bids, asks, offers, button) {
                 var oid,
@@ -138,6 +139,27 @@ define(
             console.log("setCurrentColor: " + colorid + "," + unit);
             this.colorid = colorid;
             this.unit = unit.toString();
+        };
+
+        P2pgui.prototype.checkBTCTrade = function () {
+            var msgHub = $('#p2ptrade').find('.messages');
+            
+            if (this.colorid === false) {
+                $('#buy-button').attr('disabled', true);
+                $('#sell-button').attr('disabled', true);
+
+                
+                if(msgHub[0].innerHTML.length == 0) {
+                    var msg = "Please select an asset you want to trade";
+                    var msgObj = Message.create(msg, "error");
+                    msgObj.appendTo(msgHub);
+                }
+            } else {
+                $('#buy-button').removeAttr('disabled');
+                $('#sell-button').removeAttr('disabled');
+                      
+                msgHub.empty();
+            }
         };
 
         return P2pgui;
