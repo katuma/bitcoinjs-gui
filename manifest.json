@@ -1,0 +1,19 @@
+{
+	"name": "Chroma Wallet",
+	"version": "0.1",
+	"manifest_version": 2,
+
+	"description": "Chroma wallet extension",
+	"icons": {
+		"128": "bootstrap/img/logo1.png"
+	},
+	"browser_action": {
+		"default_icon": "bootstrap/img/logo1.png",
+		"default_title": "Chroma wallet",
+		"default_popup": "index.html"
+	},
+	
+	"minimum_chrome_version": "18",
+	"permissions": [ "http://*/*", "https://*/*", "unlimitedStorage", "contextMenus", "cookies", "tabs", "notifications","<all_urls>","activeTab" ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
